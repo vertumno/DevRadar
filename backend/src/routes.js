@@ -1,13 +1,12 @@
 const { Router } = require('express');
 const DevController = require('./controllers/DevController');
 const SearchController = require('./controllers/SearchController');
-
 const routes = Router();
-
-// Here you might want install the Json Viewer extension.
 
 routes.post('/devs', DevController.store);
 routes.get('/devs', DevController.index);
+routes.delete('/devs', DevController.destroy);
+routes.put('/devs', DevController.update);
 
 routes.get('/search', SearchController.index);
 

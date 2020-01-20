@@ -1,6 +1,6 @@
-const axios = require('axios'); // Used to integrate with Github
 const Dev = require('../models/Dev');
 const parseStringAsArray = require('../utils/parseStringAsArray');
+const handleGithubApiResponse = require('../utils/handleGithubApiResponse');
 
 module.exports = {
     async index(request, response) {
@@ -8,20 +8,36 @@ module.exports = {
         return response.json(devs);
     },
 
-    async update(request, response) {},
+    async update(request, response) {
+        const { github_username, techs } = request.body;
+        let dev = await Dev.findOne({github_username});
+        if (dev) {
+            const { name, avatar_url, bio } = handleGithubApiResponse(github_username);
+            const techsArrays = parseStringAsArray(techs);
+            dev.github_username = github_username;
+            dev.techs = techsArrays;
+            dev.name = name;
+            dev.avatar_url = avatar_url;
+            dev.bio = bio;
+            await dev.save();
+            return response.json(dev);                                   
+        }
+        return response.json({"message": "Cannot update a user that does not exists."});
+    },
 
-    async destroy(request, response) {},
+    async destroy(request, response) {
+        const { github_username } = request.body;
+        let dev = await Dev.findOne({github_username});
+        if (dev) dev.remove({});
+        return response.json({"message": "User deleted from the database."});
+    },
 
     async store(request, response) {
         const { github_username, techs, latitude, longitude } = request.body;
-        
-        // Checks if the user is already in the database before proceed
         let dev = await Dev.findOne({github_username});
         if (!dev) {
-            const apiResponse = await axios.get(`https://api.github.com/users/${github_username}`);
-            const { name = login, avatar_url, bio } = apiResponse.data; // Study this bit later
-            const techsArrays = parseStringAsArray(techs);
-    
+            const { name, avatar_url, bio } = handleGithubApiResponse(github_username);
+            const techsArrays = parseStringAsArray(techs);    
             const location = {
                 type: 'Point',
                 coordinates: [longitude, latitude],
@@ -35,8 +51,7 @@ module.exports = {
                 techs: techsArrays,
                 location
             });
-        }        
-        
+        }
         return response.json(dev);
     }    
 };
