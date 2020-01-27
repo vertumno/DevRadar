@@ -36,7 +36,7 @@ module.exports = {
         const { github_username, techs, latitude, longitude } = request.body;
         let dev = await Dev.findOne({github_username});
         if (!dev) {
-            const { name, avatar_url, bio } = handleGithubApiResponse(github_username);
+            const { name, avatar_url, bio } = await handleGithubApiResponse(github_username);
             const techsArrays = parseStringAsArray(techs);    
             const location = {
                 type: 'Point',
