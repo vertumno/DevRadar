@@ -18,6 +18,13 @@
                 title: 'Github Profile'
             }
         },
+     }, {
+         defaultNavigationOptions: {
+            headerTintColor: '#fff', 
+            headerStyle: {
+                 backgroundColor: '#7d40e7'
+             }
+         },
      })
  );
 
