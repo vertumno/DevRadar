@@ -20,7 +20,8 @@
         },
      }, {
          defaultNavigationOptions: {
-            headerTintColor: '#fff', 
+            headerTintColor: '#fff',
+            headerBackTitleVisible: false, 
             headerStyle: {
                  backgroundColor: '#7d40e7'
              }
