@@ -31,14 +31,12 @@ function Main({ navigation }) {
     }, []);
 
     async function loadDevs() {
-        //const { latitude, longitude } = currentRegion;
-        const latitude = -5.8127571;
-        const longitude = -35.2258257;
-        const response = api.get('/search', {
+        const { latitude, longitude } = currentRegion;
+        const response = await api.get('/search', {
             params: {
                 latitude,
                 longitude,
-                techs: 'ReactJS'
+                techs
             }
         });
         setDevs(response.data.devs);
