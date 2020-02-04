@@ -1,6 +1,7 @@
 const Dev = require('../models/Dev');
 const parseStringAsArray = require('../utils/parseStringAsArray');
 const handleGithubApiResponse = require('../utils/handleGithubApiResponse');
+const { findConnections, sendMessages } = require('../WebSocket');
 
 module.exports = {
     async index(request, response) {
@@ -51,6 +52,13 @@ module.exports = {
                 techs: techsArrays,
                 location
             });
+
+            // We must send word to front end if new Dev is interesting for them
+            const sendSocketMessageTo = findConnections(
+                { latitude, longitude },
+                techsArrays
+            );
+            sendMessages(sendSocketMessageTo, 'new-dev', dev);
         }
         return response.json(dev);
     }    
